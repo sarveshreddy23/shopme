@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head(titleText='Welcome to Shopme.Co')"/>
+
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navbar(tabName='Home')"/>
+        <h1>Welcome to shopme amin</h1>
+    </div>
+    <footer th:replace="fragments :: footer" />
+</body>
+</html>

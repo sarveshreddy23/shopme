@@ -1,0 +1,29 @@
+
+.user-name {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+@media screen and (max-width: 668px) {
+.visible-only-on-mobile { display: block; }
+.visible-only-on-tab { display: none; }
+.visible-only-on-laptop { display: none; }
+
+div.pagination {
+    position: fixed;
+    bottom: 3%;
+}
+ }
+
+@media screen and (min-width: 669px) and (max-width: 1023px) {
+.visible-only-on-mobile { display: none; }
+.visible-only-on-tab { display: block; }
+.visible-only-on-laptop { display: none; }
+
+}
+
+@media screen and (min-width: 1024px) {
+.visible-only-on-mobile { display: none; }
+.visible-only-on-tab { display: none; }
+.visible-only-on-laptop { display: block; }
+}

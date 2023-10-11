@@ -1,0 +1,221 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head(titleText='User Management')"/>
+
+<body>
+<div class="container-fluid">
+
+    <div th:replace="fragments :: navbar(tabName='Users')"/>
+
+    <div id="messageAlert" class="alert alert-warning alert-dismissible fade show text-center" role="alert" th:if="${message}!=null">
+        <i class="fa-solid fa-circle-info fa-xl"></i>
+         [[${message}]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <h2>User Maintenance</h2>
+    <a class="link-primary link-offset-2 link-underline-opacity-100" th:href="@{/users/new}">Create User</a>
+    <a class="link-primary link-offset-2 link-underline-opacity-100  ms-3" th:href="@{/users/new}">Export csv</a>
+    <a class="link-primary link-offset-2 link-underline-opacity-100  ms-3" th:href="@{/users/new}">Export excel</a>
+    <a class="link-primary link-offset-2 link-underline-opacity-100  ms-3" th:href="@{/users/new}">Export PDF</a>
+
+    <form class="row align-items-center justify-content-sm-end mb-2 g-0" th:action="@{/users/page/1}">
+        <input type="hidden" name="sortColumn" th:value="${sortColumn}" />
+        <input type="hidden" name="sortOrder" th:value="${sortOrder}" />
+        <div class="col-auto">
+            <input type="search" placeholder="Search" name="keyword" class="form-control" th:value="${keyword}"/>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass" style="color: #f8f7f7;"></i></input>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-secondary ms-2" th:href="@{/users}">Clear</a>
+        </div>
+    </form>
+
+    <div class="visible-only-on-mobile">
+        <th:block th:each="user : ${usersList}">
+            <div class="row bg-light m-2">
+                <div class="col-auto">
+                    <img th:src="@{${user.getPhotoPath()}}" class="rounded float-end" alt="user-photo" id="thumbnailPhoto" style="max-width:100px; height:100px; display: block;">
+                </div>
+                <div class="col-6">
+                    <div class="align-middle user-name ms-2">[[${user.firstName}]] &nbsp; [[${user.lastName}]]</div>
+                    <div class=" align-middle ms-2">[[${user.getUserRoles()}]]</div>
+                    <div class="ms-2">
+                        <a th:href="@{'/users/toggle-status/'+${user.id}}">
+                            <i th:if="${user.enabled} == true" class="fa-solid fa-circle-check fa-sm" style="color: green;" title="Enabled"></i>
+                            <i th:if="${user.enabled} == false" class="fa-solid fa-circle-minus fa-sm disabled" style="color: gray;" title="Disabled"></i>
+                        </a>
+                        <a class="btn fa-regular fa-pen-to-square fa-sm px-2" id="edit_icn" title="Edit" style="color: gray;" th:href="@{'/users/edit/'+${user.id}}"></a>
+                        <a class="btn fa-regular fa-trash-can fa-sm px-2 delete_icn"  id="delete_icn" title="Delete" style="color: red;" th:email="${user.email}"  th:href="@{'/users/delete/'+${user.id}}"></a>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+    <div class="visible-only-on-tab">
+        <table class="table table-bordered table-responsive-lg table-hover table-striped">
+            <thead class="thead table-dark">
+            <tr>
+                <th:block>
+                    <th th:if="${sortOrder=='asc' and sortColumn=='enabled'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=enabled&sortOrder=desc'+'&keyword='+${keyword}}" style="display: block; width: 100%;">Status &nbsp;<i class="fa-solid fa-sort-up"></i></a></th>
+                    <th th:if="${sortOrder=='desc' and sortColumn=='enabled'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=enabled&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Status &nbsp;<i class="fa-solid fa-sort-down"></i></a></th>
+                    <th th:if="${sortColumn!='enabled'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=enabled&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Status</a></th>
+                </th:block>
+                <th class="text-center align-middle">Photos</th>
+                <th:block>
+                    <th th:if="${sortOrder=='asc' and sortColumn=='firstName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=firstName&sortOrder=desc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">First Name &nbsp;<i class="fa-solid fa-sort-up"></i></a></th>
+                    <th th:if="${sortOrder=='desc' and sortColumn=='firstName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=firstName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">First Name &nbsp;<i class="fa-solid fa-sort-down"></i></a></th>
+                    <th th:if="${sortColumn!='firstName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=firstName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">First Name</a></th>
+                </th:block>
+                <th:block>
+                    <th th:if="${sortOrder=='asc' and sortColumn=='lastName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=lastName&sortOrder=desc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Last Name &nbsp;<i class="fa-solid fa-sort-up"></i></a></th>
+                    <th th:if="${sortOrder=='desc' and sortColumn=='lastName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=lastName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Last Name &nbsp;<i class="fa-solid fa-sort-down"></i></a></th>
+                    <th th:if="${sortColumn!='lastName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=lastName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Last Name</a></th>
+                </th:block>
+                <th class="text-center align-middle">Roles</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${usersList}">
+                <td class="text-center align-middle">
+                    <a th:href="@{'/users/toggle-status/'+${user.id}}">
+                        <i th:if="${user.enabled} == true" class="fa-solid fa-circle-check fa-sm" style="color: green;" title="Enabled"></i>
+                        <i th:if="${user.enabled} == false" class="fa-solid fa-circle-minus fa-sm disabled" style="color: gray;" title="Disabled"></i>
+                    </a>
+                </td>
+                <td class="text-center align-middle">
+                    <img th:src="@{${user.getPhotoPath()}}" class="rounded float-end" alt="user-photo" id="thumbnailPhoto" style="max-width:100px; height:100px; display: block;">
+                </td>
+                <td class="text-center align-middle">[[${user.firstName}]]</td>
+                <td class="text-center align-middle">[[${user.lastName}]]</td>
+                <td class="text-center align-middle">[[${user.getUserRoles()}]]</td>
+                <td class="text-center align-middle">
+                    <a class="btn fa-regular fa-pen-to-square fa-sm px-2" id="edit_icn" title="Edit" style="color: gray;" th:href="@{'/users/edit/'+${user.id}}"></a>
+                    <a class="btn fa-regular fa-trash-can fa-sm px-2 delete_icn"  id="delete_icn" title="Delete" style="color: red;" th:email="${user.email}"  th:href="@{'/users/delete/'+${user.id}}"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="visible-only-on-laptop">
+    <table class="table table-bordered table-responsive-lg table-hover table-striped">
+        <thead class="thead table-dark">
+        <tr>
+            <th:block>
+                <th th:if="${sortOrder=='asc' and sortColumn=='enabled'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=enabled&sortOrder=desc'+'&keyword='+${keyword}}" style="display: block; width: 100%;">Status &nbsp;<i class="fa-solid fa-sort-up"></i></a></th>
+                <th th:if="${sortOrder=='desc' and sortColumn=='enabled'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=enabled&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Status &nbsp;<i class="fa-solid fa-sort-down"></i></a></th>
+                <th th:if="${sortColumn!='enabled'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=enabled&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Status</a></th>
+            </th:block>
+            <th class="text-center align-middle">Photos</th>
+            <th:block>
+                <th th:if="${sortOrder=='asc' and sortColumn=='email'}" class="align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=email&sortOrder=desc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">E-mail &nbsp;<i class="fa-solid fa-sort-up"></i></a></th>
+                <th th:if="${sortOrder=='desc' and sortColumn=='email'}" class="align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=email&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">E-mail &nbsp;<i class="fa-solid fa-sort-down"></i></a></th>
+                <th th:if="${sortColumn!='email'}" class="align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=email&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">E-mail</a></th>
+            </th:block>
+            <th:block>
+                <th th:if="${sortOrder=='asc' and sortColumn=='firstName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=firstName&sortOrder=desc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">First Name &nbsp;<i class="fa-solid fa-sort-up"></i></a></th>
+                <th th:if="${sortOrder=='desc' and sortColumn=='firstName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=firstName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">First Name &nbsp;<i class="fa-solid fa-sort-down"></i></a></th>
+                <th th:if="${sortColumn!='firstName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=firstName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">First Name</a></th>
+            </th:block>
+            <th:block>
+                <th th:if="${sortOrder=='asc' and sortColumn=='lastName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=lastName&sortOrder=desc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Last Name &nbsp;<i class="fa-solid fa-sort-up"></i></a></th>
+                <th th:if="${sortOrder=='desc' and sortColumn=='lastName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=lastName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Last Name &nbsp;<i class="fa-solid fa-sort-down"></i></a></th>
+                <th th:if="${sortColumn!='lastName'}" class="text-center align-middle"><a class="text-white text-decoration-none" th:href="@{'/users/page/'+${currentPage}+'?sortColumn=lastName&sortOrder=asc'}+'&keyword='+${keyword}" style="display: block; width: 100%;">Last Name</a></th>
+            </th:block>
+            <th class="text-center align-middle">Roles</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${usersList}">
+            <td class="text-center align-middle">
+                <a th:href="@{'/users/toggle-status/'+${user.id}}">
+                    <i th:if="${user.enabled} == true" class="fa-solid fa-circle-check fa-sm" style="color: green;" title="Enabled"></i>
+                    <i th:if="${user.enabled} == false" class="fa-solid fa-circle-minus fa-sm disabled" style="color: gray;" title="Disabled"></i>
+                </a>
+            </td>
+            <td class="text-center align-middle">
+                <img th:src="@{${user.getPhotoPath()}}" class="rounded float-end" alt="user-photo" id="thumbnailPhoto" style="max-width:100px; height:100px; display: block;">
+            </td>
+            <td class="align-middle">[[${user.email}]]</td>
+            <td class="text-center align-middle">[[${user.firstName}]]</td>
+            <td class="text-center align-middle">[[${user.lastName}]]</td>
+            <td class="text-center align-middle">[[${user.getUserRoles()}]]</td>
+            <td class="text-center align-middle">
+                <a class="btn fa-regular fa-pen-to-square fa-sm px-2" id="edit_icn" title="Edit" style="color: gray;" th:href="@{'/users/edit/'+${user.id}}"></a>
+                <a class="btn fa-regular fa-trash-can fa-sm px-2 delete_icn"  id="delete_icn" title="Delete" style="color: red;" th:email="${user.email}"  th:href="@{'/users/delete/'+${user.id}}"></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+    <div class="modal-content">
+                <div class="modal-header bg-danger bg-opacity-50">
+                    <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Deleting User</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label>Are you sure you want to delete user <b id="model-email"></b> ?</label>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a type="button" id="model-delete-btn" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:if="${totalElements==0}" class="row text-center pagination">
+    <span>[[${paginationMessage}]]</span>
+</div>
+<div th:if="${totalElements}>${itemsOnPage}" class="row pagination">
+    <div class="row text-center">
+        <span>[[${paginationMessage}]]</span>
+    </div>
+    <div class="row my-2 d-flex">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li th:if="${currentPage}==1" class="page-item disabled"><a class="page-link" th:href="@{'/users/page/'+${currentPage-1}+'?sortColumn='+${sortColumn}+'&sortOrder='+${sortOrder}+'&keyword='+${keyword}}">Previous</a></li>
+                <li th:if="${currentPage}!=1" class="page-item active"><a class="page-link" th:href="@{'/users/page/'+${currentPage-1}+'?sortColumn='+${sortColumn}+'&sortOrder='+${sortOrder}+'&keyword='+${keyword}}">Previous</a></li>
+                <th:block th:each="page : ${#numbers.sequence( 1, totalPages, 1)}">
+                    <li th:if="${page}!=${currentPage}" class="page-item"><a class="page-link" th:href="@{'/users/page/'+${page}+'?sortColumn='+${sortColumn}+'&sortOrder='+${sortOrder}+'&keyword='+${keyword}}">[[${page}]]</a></li>
+                    <li th:if="${page}==${currentPage}" class="page-item active"><a class="page-link" th:href="@{'/users/page/'+${page}+'?sortColumn='+${sortColumn}+'&sortOrder='+${sortOrder}+'&keyword='+${keyword}}">[[${page}]]</a></li>
+                </th:block>
+                <li th:if="${currentPage}==${totalPages}" class="page-item disabled"><a class="page-link" th:href="@{'/users/page/'+${currentPage+1}+'?sortColumn='+${sortColumn}+'&sortOrder='+${sortOrder}+'&keyword='+${keyword}}">Next</a></li>
+                <li th:if="${currentPage}!=${totalPages}" class="page-item active"><a class="page-link" th:href="@{'/users/page/'+${currentPage+1}+'?sortColumn='+${sortColumn}+'&sortOrder='+${sortOrder}+'&keyword='+${keyword}}">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        $(".delete_icn").on("click", function(e) {
+            e.preventDefault();
+            ele = $(this);
+            var email = ele.attr("email");
+            var href = ele.attr("href");
+            $("#model-email").text(email);
+            console.log(email);
+            console.log(href);
+            $("#model-delete-btn").attr("href", href);
+            $("#exampleModal").modal('show');
+        });
+
+        $(".alert").delay(5000).slideUp(600, function() {
+            $(this).alert('close');
+        });
+    });
+</script>
+<footer th:replace="fragments :: footer" />
+</body>
+</html>
