@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head(titleText='Welcome to Shopme.Co')"/>
+
+<body>
+<div class="container-fluid flex-grow-1">
+    <div th:replace="fragments :: navbar(tabName='Error')"/>
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 70vh">
+        <h3>Something went wrong please try again later....!</h3>
+    </div>
+
+</div>
+<footer th:replace="fragments :: footer" />
+</body>
+</html>
+

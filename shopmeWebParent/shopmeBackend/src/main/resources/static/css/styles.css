@@ -4,6 +4,15 @@
     font-weight: bold;
 }
 
+
+.bg {
+  background-image: url("/ShopmeAdmin/images/login-background.jpg");
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 @media screen and (max-width: 668px) {
 .visible-only-on-mobile { display: block; }
 .visible-only-on-tab { display: none; }

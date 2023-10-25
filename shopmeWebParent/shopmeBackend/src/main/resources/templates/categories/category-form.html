@@ -1,0 +1,81 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head(titleText=${pageTitle})"/>
+
+<body>
+<div class="container-fluid">
+    <div th:replace="fragments :: navbar(tabName='Categories')"/>
+
+    <h2>[[${pageTitle}]]</h2>
+    <form class="bg-body-secondary" th:action="@{/categories/save}" th:object="${category}" method="post" style="max-width: 800px; margin: 0 auto;" enctype="multipart/form-data">
+        <div class="border border-secondary rounded p-3">
+            <div class="input-group row m-2">
+                <label class="col-sm-4 col-form-label">Name:</label>
+                <div class="col-sm-8">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="text" class="col-8 form-control"  th:field="*{name}"  maxlength="128" required>
+                </div>
+            </div>
+            <div class="input-group row m-2">
+                <label class="col-sm-4 col-form-label">Alias:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="col-8 form-control"  th:field="*{alias}"  maxlength="128" required>
+                </div>
+            </div>
+            <div class="input-group row m-2">
+                <label class="col-sm-4 col-form-label">Parent:</label>
+                <div class="col-sm-8">
+                    <select class="form-control" th:field="*{parent}">
+                        <option value="0" selected>No Parent</option>
+                        <block th:each="category : ${categoriesByHierarchy}">
+                                <option th:value="${category.id}">[[${category.alias}]]</option>
+                        </block>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group row m-2">
+                <label class="col-sm-4 col-form-label">Image:</label>
+                <div class="col-sm-8 align-content-center d-flex flex-wrap">
+                    <input type="file" id="fileUpload" name="fileUpload" accept="image/png, image/jpeg" class="mb-2">
+                    <img th:src="@{/images/image-thumbnail.png}" class="rounded float-end" alt="user-photo" id="thumbnailPhoto" style="max-width:200px; height:auto;">
+                </div>
+            </div>
+            <div class="input-group row m-2">
+                <label class="col-sm-4 col-form-label">Enabled:</label>
+                <div class="col-sm-8">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"  th:field="*{enable}">
+                    </div>
+                </div>
+            </div>
+            <div class="text-center m-3">
+                <input class="btn btn-primary me-2" type="submit" value="Submit" />
+                <a class="btn btn-secondary" th:href="@{/categories}">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+<footer th:replace="fragments :: footer" />
+<script type="text/javascript">
+
+     $( document ).ready(function() {
+        $("#fileUpload").change(function() {
+            showThumbnail(this)
+        });
+    });
+
+    function showThumbnail(fileInput){
+        var file = fileInput.files[0];
+        console.log(file);
+        var reader = new FileReader();
+
+        reader.onload = function(e){
+            $("#thumbnail").attr("src", e.target.result);
+        }
+        reader.readAsDataURL(file)
+    }
+</script>
+
+</body>
+</html>

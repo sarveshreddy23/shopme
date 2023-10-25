@@ -1,0 +1,64 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head(titleText='Categories')"/>
+
+<body>
+<div th:replace="fragments :: navbar(tabName='Categories')"/>
+
+<div class="container">
+    <h2>Categories Maintenance</h2>
+    <a class="link-primary link-offset-2 link-underline-opacity-100" th:href="@{/categories/new}">Create Category</a>
+    <a class="link-primary link-offset-2 link-underline-opacity-100  ms-3" th:href="@{/categories/new}">Export csv</a>
+    <a class="link-primary link-offset-2 link-underline-opacity-100  ms-3" th:href="@{/categories/new}">Export excel</a>
+    <a class="link-primary link-offset-2 link-underline-opacity-100  ms-3" th:href="@{/categories/new}">Export PDF</a>
+
+    <form class="row align-items-center justify-content-sm-end mb-2 g-0" th:action="@{/users/page/1}">
+        <input type="hidden" name="sortColumn" th:value="${sortColumn}" />
+        <input type="hidden" name="sortOrder" th:value="${sortOrder}" />
+        <div class="col-auto">
+            <input type="search" placeholder="Search" name="keyword" class="form-control" th:value="${keyword}"/>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass" style="color: #f8f7f7;"></i></input>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-secondary ms-2" th:href="@{/users}">Clear</a>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-responsive-lg table-hover table-striped">
+        <thead class="thead table-dark">
+            <tr>
+                <th>Status</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Alias</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="category :${categoryList}">
+                <td>
+                    <a th:href="@{'/users/toggle-status/'+${category.id}}">
+                        <i th:if="${category.enable} == true" class="fa-solid fa-circle-check fa-xl" style="color: green;" title="Enabled"></i>
+                        <i th:if="${category.enable} == false" class="fa-solid fa-circle-minus fa-xl disabled" style="color: gray;" title="Disabled"></i>
+                    </a>
+                </td>
+                <td>[[${category.image}]]</td>
+                <td>[[${category.name}]]</td>name
+                <td>[[${category.alias}]]</td>
+                <td>
+                    <a class="btn fa-regular fa-pen-to-square fa-xl px-2" id="edit_icn" title="Edit" style="color: gray;" th:href="@{'/categories/edit/'+${category.id}}"></a>
+                    <a class="btn fa-regular fa-trash-can fa-xl px-2 delete_icn"  id="delete_icn" title="Delete" style="color: red;" th:name="${category.name}"  th:href="@{'/categories/delete/'+${category.id}}"></a>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+<footer th:replace="fragments :: footer" />
+</body>
+</html>

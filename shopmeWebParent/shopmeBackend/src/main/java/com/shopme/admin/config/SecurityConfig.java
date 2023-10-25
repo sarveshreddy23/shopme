@@ -61,11 +61,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
        return httpSecurity.cors(corsConfigurer -> corsConfigurer.disable())
-               .csrf(csrfConfigurer->csrfConfigurer.disable())
+               .csrf(configurer -> configurer.disable())
                .authorizeHttpRequests(auth-> {
-
                    auth.requestMatchers(AntPathRequestMatcher.antMatcher("/login")).permitAll()
-                           .requestMatchers("/webjars/**","/fontAwesome/**", "/webfonts/**", "images/**", "/getemail").permitAll()
+                           .requestMatchers("/webjars/**","/fontAwesome/**", "/webfonts/**", "/images/**", "/getemail", "css/**").permitAll()
                    .anyRequest().authenticated();
                }).authenticationProvider(daoAuthenticationProvider())
                  .formLogin(formLoginConfigurer->{
